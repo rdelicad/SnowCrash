@@ -1,0 +1,47 @@
+1. List files in the directory:
+   ll
+   # Output shows: level09 binary with SUID permissions and token file owned by flag09
+
+2. Analyze the binary behavior:
+   ./level09 ~/token
+   # Output: /iqpi4{zm{9wq�s{@JA���{�
+   
+   cat token
+   # Output: f4kmm6p|=�p�n��DB�Du{��
+   
+   ./level09 token
+   # Output: tpmhr
+
+3. Test the encryption pattern:
+   ./level09 a    # Output: a
+   ./level09 aa   # Output: ab  
+   ./level09 aaa  # Output: abc
+   # Pattern discovered: each character gets its position index added
+
+4. Create decipher script:
+   vim /tmp/decipher.py
+   # Script content:
+   import sys
+   argv = sys.argv[1]
+   res = ""
+   for i in range(len(argv)):
+       res += chr(ord(argv[i]) - i)
+   print(res)
+
+5. Decrypt the token:
+   python /tmp/decipher.py $(cat ~/token)
+   # Output: f3iji1ju5yuevaus41q1afiuq
+
+6. Login as flag09:
+   su flag09
+   # Password: f3iji1ju5yuevaus41q1afiuq
+
+7. Get the flag:
+   getflag
+   # Output: Check flag.Here is your token : s5cAJpM8ev6XHw998pRWG728z
+
+TECHNIQUE: Reverse engineering binary encryption algorithm
+ALGORITHM: Each character has its position index added (cipher[i] = original[i] + i)
+DECRYPTION: Subtract position index from each character (original[i] = cipher[i] - i)
+PASSWORD: f3iji1ju5yuevaus41q1afiuq
+TOKEN: s5cAJpM8ev6XHw998pRWG728z

