@@ -1,0 +1,24 @@
+1. Search for flag01 user in passwd file:
+   cat /etc/passwd | grep flag01
+   # Output: flag01:42hDRfypTqqnw:3001:3001::/home/flag/flag01:/bin/bash
+
+2. Extract the password hash:
+   cat /etc/passwd | grep flag01 | cut -d: -f2
+   # Output: 42hDRfypTqqnw
+
+3. Crack the hash using John the Ripper:
+   echo "42hDRfypTqqnw" > hash.txt
+   john hash.txt
+   john --show hash.txt
+   # Output: abcedefg
+   # The hash is DES encrypted, john should crack it quickly
+
+4. Login as flag01:
+   su flag01
+   # Password: abcedefg 
+
+5. Get the flag:
+   getflag
+   # Output: Check flag.Here is your token : f2av5il02puano7naaf6adaaf
+
+TOKEN: f2av5il02puano7naaf6adaaf

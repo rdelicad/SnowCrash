@@ -1,0 +1,23 @@
+1. List files in the directory:
+   ll
+   # Output shows: level02.pcap file owned by flag02
+
+2. Analyze the pcap file to extract password:
+   tcpdump -r level02.pcap -X | grep "0x0030" | cut -c56- | tr -d '\n'
+   # This extracts hexadecimal data from network capture
+   # Looking for password transmission in the packet data
+
+3. From the output, identify the password:
+   # The password appears to be: ft_wandr...NDRel.L0L
+   # Clean password: ft_waNDReL0L
+
+4. Login as flag02:
+   su flag02
+   # Password: ft_waNDReL0L
+
+5. Get the flag:
+   getflag
+   # Output: Check flag.Here is your token : kooda2puivaav1idi4f57q8iq
+
+PASSWORD: ft_waNDReL0L
+TOKEN: kooda2puivaav1idi4f57q8iq

@@ -1,0 +1,12 @@
+1. Search for files owned by user flag00:
+   find / -user flag00 2>/dev/null
+
+2. Read the found file:
+   cat /usr/sbin/john
+   # Output: cdiiddwpgswtgt
+
+3. Decrypt with ROT11:
+   echo "cdiiddwpgswtgt" | tr 'a-z' 'l-za-k'
+   # Output: nottoohardhere
+
+PASSWORD: nottoohardhere

