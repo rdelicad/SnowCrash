@@ -1,0 +1,39 @@
+1. List files in the directory:
+   ll
+   # Output shows: level13 binary with SUID permissions owned by flag13
+
+2. Test the binary:
+   ./level13
+   # Output: UID 2013 started us but we we expect 4242
+   
+   id
+   # Output: uid=2013(level13) - confirms current UID
+
+3. Analyze the binary with GDB:
+   gdb ./level13
+   disas main
+   # Shows assembly code with getuid() call and comparison with 0x1092 (4242 in decimal)
+
+4. Set breakpoint and debug:
+   b getuid
+   r
+   # Breakpoint hits at getuid function
+
+5. Manipulate the UID check:
+   s
+   # Step through getuid function
+   print $eax
+   # Shows: $1 = 2013 (current UID)
+   
+   set $eax=4242
+   # Modify return value to expected UID
+   
+   s
+   # Continue execution with modified UID
+   # Output: your token is 2A31L79asukciNyi8uppkEuSx
+
+TECHNIQUE: GDB debugging and register manipulation
+VULNERABILITY: UID check bypass through runtime modification
+EXPLOIT: Modified getuid() return value in EAX register during execution
+BYPASS: Changed UID from 2013 to 4242 to pass validation check
+TOKEN: 2A31L79asukciNyi8uppkEuSx
